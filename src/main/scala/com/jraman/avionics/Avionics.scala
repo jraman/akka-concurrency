@@ -1,6 +1,6 @@
 package com.jraman.avionics
 
-import akka.actor.{Props, Actor, ActorRef, ActorSystem}
+import akka.actor.{ActorRef, ActorSystem, Props}
 import akka.pattern.ask
 import scala.concurrent.Await
 import akka.util.Timeout
@@ -19,6 +19,7 @@ object Avionics {
 
   def main(args: Array[String]) {
     // Grab the controls
+    // Future returned by an Actor is of type Any.  Use mapTo to coerce it to ActorRef.
     val control = Await.result(
       (plane ? Plane.GiveMeControl).mapTo[ActorRef],
       5.seconds)
