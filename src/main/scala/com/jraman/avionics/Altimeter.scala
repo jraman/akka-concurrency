@@ -10,10 +10,16 @@ object Altimeter {
   // Sent to the Altimeter to inform it about
   // rate-of-climb changes
   case class RateChange(amount: Float)
+
+  // Sent by the Altimeter at regular intervals
+  case class AltitudeUpdate(altitude: Double)
 }
 
-class Altimeter extends Actor with ActorLogging {
+class Altimeter extends Actor with ActorLogging with EventSource {
   import Altimeter._
+
+  override type Receive = PartialFunction[Any, Unit]
+
   // We need an "ExecutionContext" for the scheduler.  This
   // Actor's dispatcher can serve that purpose.  The
   // scheduler's work will be dispatched on this Actor's own
@@ -48,7 +54,7 @@ class Altimeter extends Actor with ActorLogging {
   // to update our altitude
   case object Tick
 
-  def receive = {
+  def altimeterReceive: Receive = {
     // Our rate of climb has changed
     case RateChange(amount) =>
       // Truncate the range of 'amount' to [-1, 1]
@@ -61,7 +67,11 @@ class Altimeter extends Actor with ActorLogging {
       val tick = System.currentTimeMillis
       altitude = altitude + ((tick - lastTick) / 60000.0) * rateOfClimb
       lastTick = tick
+      sendEvent(AltitudeUpdate(altitude))
   }
+
+  // Compose receive
+  def receive = eventSourceReceive orElse altimeterReceive
 
   // Kill our ticker when we stop
   override def postStop(): Unit = ticker.cancel

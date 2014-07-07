@@ -13,6 +13,7 @@ object Plane {
 // build the Altimeter
 class Plane extends Actor with ActorLogging {
   import Altimeter._
+  import EventSource._
   import Plane._
 
   val altimeter = context.actorOf(
@@ -20,9 +21,15 @@ class Plane extends Actor with ActorLogging {
   val controls = context.actorOf(
     Props(new ControlSurfaces(altimeter)), "ControlSurfaces")
 
+  override def preStart() = {
+    altimeter ! RegisterListener(self)
+  }
+
   def receive = {
     case GiveMeControl =>
       log info("Plane giving control.")
       sender ! controls
+    case AltitudeUpdate(altitude) =>
+      log info(s"Altitude is now: $altitude")
   }
 }
