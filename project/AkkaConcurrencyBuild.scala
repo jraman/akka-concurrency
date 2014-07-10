@@ -10,10 +10,15 @@ object AkkaConcurrencyBuild extends Build {
       name := "Akka Concurrency",
       organization := "com.jraman",
       version := "0.1-SNAPSHOT",
-      scalaVersion := "2.10.0",
+      scalaVersion := "2.11.0",
       scalacOptions ++= Seq("-feature", "-deprecation"),
       resolvers += "Typesafe Releases" at "http://repo.typesafe.com/typesafe/releases",
-      libraryDependencies += "com.typesafe.akka" %% "akka-actor" % "2.1.2"
+      libraryDependencies ++= Seq(
+        "org.scalatest" %% "scalatest" % "2.2.0" % "test",
+        "com.typesafe.akka" %% "akka-testkit" % "2.3.4",
+        "com.typesafe.akka" %% "akka-actor" % "2.3.4"
+      )
+
     )
   )
 }
