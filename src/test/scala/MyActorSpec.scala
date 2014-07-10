@@ -4,7 +4,8 @@ import java.util.concurrent.atomic.AtomicInteger
 import org.scalatest.{fixture, ParallelTestExecution, Matchers}
 
 /**
- * Sec 6.5 This is a slight digression into making tests run in parallel.
+ * Sec 6.5
+ * This is a slight digression into making tests run in parallel.
  * Here we show how to create a separate (new) ActorSystem for each test so that
    they can be run in parallel.  Otherwise, two parallel tests both trying to
    system.actorOf(Props[MyActor], "MyActor") will fail since the actor name has to be
@@ -12,7 +13,26 @@ import org.scalatest.{fixture, ParallelTestExecution, Matchers}
  * My modifications:
    - The first test "throw when made with wrong name" does not throw an Exception
      with the given code from the book.
-   -
+ * http://doc.scalatest.org/2.2.0/index.html#org.scalatest.fixture.NoArg has this code and
+   als has equivalent code that does not use NoArg.
+ * There is quite a bit of magic going on in this code:
+   - ActorSys is a fixture which requires no args.
+   - ActorSys has an apply method - hence, ActorSys() with no args is possible.
+   - Each test constructs new ActorSys with no args - because ActorSys mixes NoArg
+   - MyActorSpec extends fixture.WordSpec.  Hence, a fixture object (ActorSys) is passed
+     into each test.  Normally, fixture.WordSpec requires defining FixtureParam and withFixture,
+     but because of NoArg, the fixture is directly passed in to each test.
+   - MyActorSpec mixes in ParallelTestExecution which enable parallel execution of tests.
+   - UnitFixture is used in this example, because in this case, the fixture.WordSpec feature enabling
+     tests to be defined as functions from fixture objects of type FixtureParam to Unit is not being used.
+     Rather, only the secondary feature that enables tests to be defined as functions from no parameters
+     to Unit is being used. This secondary feature is described in the second-to-last paragraph on the
+     main Scaladoc documentation of fixture.WordSpec, which says:
+     If a test doesn't need the fixture, you can indicate that by providing a no-arg instead of a
+     one-arg function, ... In other words, instead of starting your function literal with something like
+     “db =>”, you'd start it with “() =>”. For such tests, runTest will not invoke withFixture(OneArgTest).
+     It will instead directly invoke withFixture(NoArgTest).
+     [Above copied from http://doc.scalatest.org/2.2.0/index.html#org.scalatest.fixture.NoArg]
  */
 
 
@@ -34,6 +54,7 @@ object ActorSys {
 }
 
 
+// the fixture to be passed into each fixture.WordSpec test
 class ActorSys(name: String)
   extends TestKit(ActorSystem(name))
   with ImplicitSender
