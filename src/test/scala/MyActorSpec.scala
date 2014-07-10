@@ -39,7 +39,7 @@ class ActorSys(name: String)
   with ImplicitSender
   with fixture.NoArg {
 
-  def this() = this("TestSystem%05d".format(ActorSys.uniqueId.getAndIncrement()))
+  def this() = this("TestSystem%05d".format(ActorSys.uniqueId.getAndIncrement))
 
   def shutdown() = system.shutdown()      // system is an implicit val
 
@@ -68,11 +68,13 @@ class MyActorSpec
   }
 
   "construct without exception" in new ActorSys {
+    info(s"system.name = ${system.name}")
     val a = makeActor(system)       // implicit system of TestKit
     // if constructor throws, then this test will fail
   }
 
   "respond with a Pong to a Ping" in new ActorSys {
+    info(s"system.name = ${system.name}")
     val a = makeActor(system)
     a ! Ping
     expectMsg(Pong)
