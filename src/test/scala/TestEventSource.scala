@@ -8,6 +8,7 @@ import com.jraman.avionics._
 /**
  * Notes:
  * TestActorRef[TestEventSource].underlyingActor provides access to the actor itself (not ActorRef).
+ * Unlike what the book says, ImplicitSender is not required.
  */
 
 class TestEventSource extends Actor
