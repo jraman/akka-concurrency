@@ -2,18 +2,27 @@ package com.jraman.avionics
 
 import akka.actor.{Actor, ActorRef}
 
-// Messages used by listeners to register and unregister
-// themselves
-case class RegisterListener(listener: ActorRef)
-case class UnregisterListener(listener: ActorRef)
+object EventSource {
+
+  // Messages used by listeners to register and unregister
+  // themselves
+  case class RegisterListener(listener: ActorRef)
+
+  case class UnregisterListener(listener: ActorRef)
+
+}
+
 
 trait EventSource {
   def sendEvent[T](event: T): Unit
   def eventSourceReceive: Actor.Receive
 }
 
+
 trait ProductionEventSource extends EventSource {
   this: Actor =>
+
+  import EventSource._
 
   // We're going to use a Vector but many structures would be
   // adequate

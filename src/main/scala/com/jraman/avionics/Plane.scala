@@ -13,6 +13,7 @@ object Plane {
 // build the Altimeter
 class Plane extends Actor with ActorLogging {
   import Altimeter._
+  import EventSource._
   import Plane._
 
   val altimeter = context.actorOf(
