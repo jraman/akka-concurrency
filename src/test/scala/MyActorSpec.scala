@@ -10,6 +10,10 @@ import org.scalatest.{fixture, ParallelTestExecution, Matchers}
    they can be run in parallel.  Otherwise, two parallel tests both trying to
    system.actorOf(Props[MyActor], "MyActor") will fail since the actor name has to be
    unique in that actor system.
+ * In the code below:
+   - ActorSys is a fixture, a new instance of which is passed to each test.
+   - ActorSys derives from (mixes in) fixture.NoArg
+   - MyActorSpec is independent of Actor components - it is neither a TestKit nor an ImplicitSender.
  * My modifications:
    - The first test "throw when made with wrong name" does not throw an Exception
      with the given code from the book.
