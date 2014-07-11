@@ -1,5 +1,5 @@
 import akka.actor.{Props, Actor, ActorSystem}
-import akka.testkit.{TestActorRef, TestLatch, ImplicitSender, TestKit}
+import akka.testkit.{ImplicitSender, TestActorRef, TestLatch, TestProbe, TestKit}
 import com.jraman.avionics.{EventSource, Altimeter}
 import org.scalatest.{BeforeAndAfterAll, Matchers, WordSpecLike}
 import scala.concurrent.Await
@@ -128,22 +128,23 @@ class AltimeterSpec
        * We'll test that multiple messages are received.
        * Since we are dealing with a single ActorSystem, this actor may be the
          same as the (already climbing) actor in a previous test.
+       * We switch to using a TestProbe since we are not limited to a single
+         instance like in the case of testActor.
       */
       val ref = system.actorOf(Props(Altimeter()))
-      ref ! EventSource.RegisterListener(testActor)
+      val probe = TestProbe()
+      ref ! EventSource.RegisterListener(probe.ref)
       ref ! RateChange(0.5f)
 
       // Ignore any Ticks prior to RateChange taking effect.
-      ignoreMsg {
+      probe.ignoreMsg {
         case AltitudeUpdate(altitude) if altitude == 0.0f =>
           info("Ignored: Altitude update zero")
           true
       }
 
-      Thread.sleep(1000)
-
       for { i <- 1 to 4} {
-        expectMsgPF(500.millis) {
+        probe.expectMsgPF(500.millis) {
           case AltitudeUpdate(altitude) if altitude >= 0.0f =>
             info(s"Expected: Altitude update $altitude")
             true
