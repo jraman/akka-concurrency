@@ -10,6 +10,7 @@ object Altimeter {
   // Sent to the Altimeter to inform it about
   // rate-of-climb changes
   case class RateChange(amount: Float)
+  case class Stop()
 
   // Sent by the Altimeter at regular intervals
   case class AltitudeUpdate(altitude: Double)
@@ -19,6 +20,8 @@ object Altimeter {
 
 class Altimeter extends Actor with ActorLogging {
   this: EventSource =>
+
+  log info s"New Altimeter: ${this.toString}"
 
   import Altimeter._
 
@@ -64,14 +67,19 @@ class Altimeter extends Actor with ActorLogging {
       // Truncate the range of 'amount' to [-1, 1]
       // before multiplying
       rateOfClimb = amount.min(1.0f).max(-1.0f) * maxRateOfClimb
-      log info(s"Altimeter changed rate of climb to $rateOfClimb.")
+      log info s"Altimeter changed rate of climb to $rateOfClimb."
 
     // Calculate a new altitude
     case Tick =>
       val tick = System.currentTimeMillis
       altitude = altitude + ((tick - lastTick) / 60000.0) * rateOfClimb
       lastTick = tick
+      log info s"Tick altitude $altitude"
       sendEvent(AltitudeUpdate(altitude))
+
+    case Stop =>
+      log info "Stopping"
+      context.stop(self)
   }
 
   // Compose receive
