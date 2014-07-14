@@ -1,5 +1,11 @@
 package com.jraman.avionics
 
+/**
+ * LeadFlightAttendant
+ * Creates subordinate FlightAttendants in preStart() method
+   using context.actorOf() with a creator method.
+ */
+
 import akka.actor.{Props, ActorRef, Actor}
 import com.jraman.avionics.LeadFlightAttendant.GetFlightAttendant
 
@@ -50,7 +56,7 @@ class LeadFlightAttendant extends Actor {
 }
 
 
-// short program to show construction of actors
+// short program to show construction of actors - lead attendant + subordinate attendants
 object FlightAttendantChecker extends App {
   val system = akka.actor.ActorSystem("PlaneSimulation")
   val props = Props(new LeadFlightAttendant with AttendantCreationPolicy)
