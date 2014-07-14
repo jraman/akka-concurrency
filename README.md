@@ -21,3 +21,75 @@ akka_version [2.1.2]:
 
 Template applied in ./akka-concurrency
 ```
+
+
+Run or Test
+===========
+Code after each relevant section is tagged.  The idea is to
+git checkout the required tag and `sbt run` or `sbt test`.
+
+More details are below.
+
+### List all tags
+```
+$ git tag -l -n1
+```
+
+
+### Sec 5.5 Plane with Altimeter
+```
+$ git checkout sec5.5
+$ sbt run
+Enter number: 2       ## avionics.Avionics
+```
+
+
+### Sec 5.5 EventSource: Getting Updates from the Altimeter
+```
+$ git checkout sec5.5a
+$ sbt run
+Enter number: 2       ## avionics.Avionics
+```
+
+
+### Sec 6.3 Testing the EventSource
+```
+$ git checkout sec6.3
+$ sbt test
+```
+
+### Sec 6.5 Running Tests in Parallel with Separate ActorSystems
+```
+$ git checkout sec6.5
+$ sbt test
+
+# Using TestProbe
+$ git checkout sec6.5a
+$ git diff sec6.5
+$ sbt test
+```
+
+
+### Sec 7.2 Actor Paths
+```
+$ git checkout sec7.2
+$ sbt run
+Enter number: 4       ## investigation.SampleActorPath
+```
+
+
+### Sec 7.3 Section 7.3 Staffing the Plane: FlightAttendants
+```
+$ git checkout sec7.3
+$ sbt run
+Enter number: 4       ## avionics.FlightAttendantChecker
+```
+
+
+### Sec 7.4 Add Pilot and Copilot
+```
+$ git checkout sec7.4
+$ sbt run
+Enter number: 2       ## avionics.Avionics
+```
+
