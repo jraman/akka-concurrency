@@ -7,6 +7,12 @@ import akka.util.Timeout
 import scala.concurrent.duration._
 import Plane.Controls
 
+/**
+ * main() creates Plane Actor
+ * Plane creates Pilot, CoPilot, Autopilot, LeadFlightAttendant, Altimeter, and ControlSurfaces Actors
+ * LeadFlightAttendant creates the subordinate FlightAttendant Actors
+ */
+
 // The futures created by the ask syntax need an
 // execution context on which to run, and we will use the
 // default global instance for that context
@@ -24,6 +30,7 @@ object Avionics {
     // Future returned by an Actor is of type Any.  Use mapTo to coerce it to ActorRef.
     val Controls(control) = Await.result(
       (plane ? Plane.GiveMeControl).mapTo[Controls], 5.seconds)
+
     // Takeoff!
     system.scheduler.scheduleOnce(200.millis) {
       control ! ControlSurfaces.StickBack(1f)
