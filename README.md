@@ -4,23 +4,15 @@ akka-concurrency
  * For the book "Akka Concurrency"
  * A sample for the Typesafe Stack (http://typesafe.com/stack).
  * Akka 2.1.2 sample project using Scala and SBT.
- * To run and test it use SBT invoke: `sbt run`
+ * To run and test it use SBT invoke: `sbt run` or `sbt test`
 
 
-Setup
-=====
-```
-$ g8 typesafehub/akka-scala-sbt -b akka-2.1-scala-2.10
+Code
+====
+ * Code is divided into two main dirs: `investigation` and `avionics`.
+ * For `avionics`, `Avionics` has `main`.  It creates a `Plane` actor
+   which in turn creates a hierarchy of other actors - pilot, flight attendants etc.
 
-Akka 2.1.2 Project Using Scala and sbt
-
-name [Akka Project In Scala]: Akka Concurrency
-organization [org.example]: com.jraman
-version [0.1-SNAPSHOT]:
-akka_version [2.1.2]:
-
-Template applied in ./akka-concurrency
-```
 
 
 Run or Test
@@ -91,5 +83,21 @@ Enter number: 4       ## avionics.FlightAttendantChecker
 $ git checkout sec7.4
 $ sbt run
 Enter number: 2       ## avionics.Avionics
+```
+
+
+Initial Setup
+=============
+```
+$ g8 typesafehub/akka-scala-sbt -b akka-2.1-scala-2.10
+
+Akka 2.1.2 Project Using Scala and sbt
+
+name [Akka Project In Scala]: Akka Concurrency
+organization [org.example]: com.jraman
+version [0.1-SNAPSHOT]:
+akka_version [2.1.2]:
+
+Template applied in ./akka-concurrency
 ```
 
