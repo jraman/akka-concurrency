@@ -2,6 +2,15 @@ package com.jraman.avionics
 
 import akka.actor.{ActorRef, Props, Actor, ActorLogging}
 
+/**
+ * Actor paths and naming convention:
+ * /user/Plane
+ * /user/Plane/Pilot.<name>
+ * /user/Plane/Copilot.<name>
+ * /user/Plane/Autopilot
+ */
+
+
 object Plane {
   // Returns the control surface to the Actor that
   // asks for them
@@ -24,9 +33,9 @@ class Plane extends Actor with ActorLogging {
     Props(new ControlSurfaces(altimeter)), "ControlSurfaces")
   val cfgstr = "com.jraman.avionics.flightcrew"
   val config = context.system.settings.config
-  val pilot = context.actorSelection("/user/Plane/Pilot/" + config.getString(s"$cfgstr.pilotName"))
-  val copilot = context.actorSelection("/user/Plane/Pilot/" + config.getString(s"$cfgstr.coPilotName"))
-  val autopilot = context.actorSelection("/user/Plane/Pilot/Autopilot")
+  val pilot = context.actorOf(Props[Pilot], "Pilot." + config.getString(s"$cfgstr.pilotName"))
+  val copilot = context.actorOf(Props[CoPilot], "Copilot." + config.getString(s"$cfgstr.copilotName"))
+  val autopilot = context.actorOf(Props[Autopilot], "Autopilot")
   val flightAttendant = context.actorOf(Props(LeadFlightAttendant()),
                                         config.getString(s"$cfgstr.leadAttendantName"))
 

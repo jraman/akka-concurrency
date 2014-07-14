@@ -5,6 +5,8 @@ import akka.pattern.ask
 import scala.concurrent.Await
 import akka.util.Timeout
 import scala.concurrent.duration._
+import Plane.Controls
+
 // The futures created by the ask syntax need an
 // execution context on which to run, and we will use the
 // default global instance for that context
@@ -20,9 +22,8 @@ object Avionics {
   def main(args: Array[String]) {
     // Grab the controls
     // Future returned by an Actor is of type Any.  Use mapTo to coerce it to ActorRef.
-    val control = Await.result(
-      (plane ? Plane.GiveMeControl).mapTo[ActorRef],
-      5.seconds)
+    val Controls(control) = Await.result(
+      (plane ? Plane.GiveMeControl).mapTo[Controls], 5.seconds)
     // Takeoff!
     system.scheduler.scheduleOnce(200.millis) {
       control ! ControlSurfaces.StickBack(1f)

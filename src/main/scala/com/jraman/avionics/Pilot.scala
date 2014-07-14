@@ -46,7 +46,7 @@ class CoPilot extends Actor {
   var autopilot: ActorRef = context.system.deadLetters
 
   val pilotName = context.system.settings.config.getString(
-    "com.jayanth.avionics.flightcrew.pilotName"
+    "com.jraman.avionics.flightcrew.pilotName"
   )
 
   def receive = {
