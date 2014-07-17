@@ -10,6 +10,7 @@ import akka.actor.{Props, ActorRef, Actor}
 import com.jraman.avionics.LeadFlightAttendant.GetFlightAttendant
 
 
+
 // Policy for creating subordinate flight attendants.
 trait AttendantCreationPolicy {
   val numberOfAttendants = 8
@@ -17,7 +18,7 @@ trait AttendantCreationPolicy {
 }
 
 
-// Mechanism for creating the LeadFlightAttendant
+// Mechanism for creating the LeadFlightAttendant.  For cake pattern.
 trait LeadFlightAttendantProvider {
   def newLeadFlightAttendant: Actor = LeadFlightAttendant()
 }
@@ -63,6 +64,6 @@ object FlightAttendantChecker extends App {
   val name = system.settings.config.getString("com.jraman.avionics.flightcrew.leadAttendantName")
 
   val lead = system.actorOf(props, name)
-  Thread.sleep(2000)    // give some time for the attendants to get created
+  Thread.sleep(1000)    // give some time for the attendants to get created
   system.shutdown()
 }

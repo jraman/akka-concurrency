@@ -6,6 +6,13 @@ import akka.actor.{Actor, ActorLogging}
 // timing functionality
 import scala.concurrent.duration._
 
+
+// For cake pattern
+trait AltimeterProvider {
+  def newAltimeter: Actor = Altimeter()
+}
+
+
 object Altimeter {
   // Sent to the Altimeter to inform it about
   // rate-of-climb changes
@@ -17,6 +24,7 @@ object Altimeter {
 
   def apply() = new Altimeter with ProductionEventSource
 }
+
 
 class Altimeter extends Actor with ActorLogging {
   this: EventSource =>

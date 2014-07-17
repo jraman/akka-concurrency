@@ -86,6 +86,15 @@ Enter number: 2       ## avionics.Avionics
 ```
 
 
+Actor Tradeoffs
+===============
+Using Actors comes with its benefits at a price.
+ * `ActorRef`s are not typed.  Actor hierarchies can change over time.  Don't expect
+   `context.parent` to be the same tomorrow as it is today.  Lack of type does not save
+   you here.
+
+
+
 Initial Setup
 =============
 ```
