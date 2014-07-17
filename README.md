@@ -86,6 +86,23 @@ Enter number: 2       ## avionics.Avionics
 ```
 
 
+### Sec 8.5 The Plane that Healed Itself - Supervisors
+ * Modified hierarchy with StopSupervisor (Pilots) and ResumeSupervisor (Equipment).
+   Overrides default actor life cycle.  The FlightAttendants, including the lead, use
+   the default life cycle.  See Fig 8.7
+ * Cake pattern for constructing the Plane.  Using *Provider traits and Plane self typing.
+ * Dependency injection into Pilot using plane, autopilot, control and altimeter ActorRefs.
+   Similarly for Copilot.
+
+The old main programs and tests should still work.  There is nothing testing the added functionality yet.
+```
+$ git checkout sec8.5
+$ sbt run
+Enter number: 2       ## avionics.Avionics
+```
+
+
+
 Actor Tradeoffs
 ===============
 Using Actors comes with its benefits at a price.
