@@ -102,6 +102,15 @@ Enter number: 2       ## avionics.Avionics
 ```
 
 
+#### Pilot Flies the Plane
+```
+$ git checkout sec8.5a
+$ sbt run pilot
+Enter number: 2       ## avionics.Avionics 
+```
+You should see a message "Pilot will start flying the plane."
+
+
 
 Actor Tradeoffs
 ===============
