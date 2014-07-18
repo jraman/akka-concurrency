@@ -52,3 +52,14 @@ using `actorSelection`.
 Moral of the story: Watch out for `actorFor`.
 
 
+
+### Unhandled Messages Could Get Lost
+If you send a message to an actor and the actor does not handle that case (i.e. the receive method partial function is undefined for that message),
+then that message is as good as lost in the ether.  It does not go to dead letters.
+
+How found: I misspelled the path of an actor and that actor was not getting the message that I sent.  And for the life of me,
+could not figure out why the message was not being received.  The misspelled actor was receiving the message and silently
+ignoring it.  I tried `actorFor`, `actorSelection`, `tell`, and `ask` (which timed out).
+
+Moral of the story: Always have a `case _ =>` in the `receive` method of the actor that at least logs an error.
+

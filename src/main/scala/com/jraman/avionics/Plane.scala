@@ -42,7 +42,7 @@ class Plane extends Actor with ActorLogging {
   val copilotName = config.getString(s"$cfgstr.copilotName")
   val leadAttendantName = config.getString(s"$cfgstr.leadAttendantName")
 
-  def actorForPilots(name: String) = context.actorFor("Pilots" + name)
+  def actorForPilots(name: String) = context.actorFor("Pilots/" + name)
 
   override def preStart() = {
     import EventSource.RegisterListener
@@ -60,7 +60,7 @@ class Plane extends Actor with ActorLogging {
 
   def receive = {
     case GiveMeControl =>
-      log info("Plane giving control.")
+      log info s"Plane giving control to ${sender}"
       val controls = context.actorFor("Equipment/ControlSurfaces")
       sender ! Controls(controls)
 
