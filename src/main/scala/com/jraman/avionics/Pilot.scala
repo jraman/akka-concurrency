@@ -1,7 +1,7 @@
 package com.jraman.avionics
 
-import akka.actor.{ActorSelection, ActorLogging, Actor, ActorRef}
-import com.jraman.avionics.Plane.Controls
+import akka.actor._
+import com.jraman.avionics.Plane.{GiveMeControl, Controls}
 import scala.concurrent.Await
 import scala.concurrent.duration._
 import akka.pattern.ask
@@ -92,15 +92,26 @@ class Copilot(plane: ActorRef, autopilot: ActorRef, altimeter: ActorRef)
   import Pilot.ReadyToGo
 
   var controls: ActorRef = context.system.deadLetters
-  var pilot: ActorSelection = context.actorSelection(context.system.deadLetters.path.name)
+  var pilotSelection: ActorSelection = context.actorSelection(context.system.deadLetters.path.name)
 
   val pilotName = context.system.settings.config.getString(
     "com.jraman.avionics.flightcrew.pilotName"
   )
 
+
+  val messageId = 42
   def receive = {
     case ReadyToGo =>
-      pilot = context.actorSelection(pilotName)
+      log warning ("../" + pilotName)
+      pilotSelection = context.actorSelection("../" + pilotName)
+      pilotSelection ! Identify(messageId)
+    case ActorIdentity(correlationId, Some(pilot)) =>
+      context.watch(pilot)
+    case ActorIdentity(correlationId, None) =>
+      log error s"Could not find active pilot"
+    case Terminated(pilot) =>
+      log info "Received pilot terminated message"
+      plane ! GiveMeControl
     case msg =>
       log error s"Unhandled message $msg"
   }

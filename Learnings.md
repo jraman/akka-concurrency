@@ -63,3 +63,12 @@ ignoring it.  I tried `actorFor`, `actorSelection`, `tell`, and `ask` (which tim
 
 Moral of the story: Always have a `case _ =>` in the `receive` method of the actor that at least logs an error.
 
+
+### TestActor and TestProbe
+Mixing in the `TestKit` trait provides `testActor`, `expectMsg` and `lastSender` (and probably others too).
+
+`TestProbe` has `expectMsg` and `lastSender` methods.
+
+The difference is that with `testActor` the actor is already created and ready for use.  With `TestProbe` this means instantiating an actor yourself.  Not much of a difference.  And `TestProbe` seems less magical.
+
+

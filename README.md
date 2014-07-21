@@ -101,14 +101,25 @@ $ sbt run
 Enter number: 2       ## avionics.Avionics
 ```
 
-
-#### Pilot Flies the Plane
+#### Sec 8.5 Pilot Flies the Plane
 ```
 $ git checkout sec8.5a
-$ sbt run pilot
+$ sbt
+sbt> run pilot
 Enter number: 2       ## avionics.Avionics 
 ```
 You should see a message "Pilot will start flying the plane."
+
+
+### Sec 8.6 Dead Pilots
+ * Copilot watches Pilot.  Note that using `actorSelection` is a bit more complicated than
+   using `actorFor`.
+ * `PilotSpec` has the newly added test.
+ ```
+ $ git checkout sec8.6
+ $ sbt
+ sbt> testOnly PilotSpec
+ ```
 
 
 
