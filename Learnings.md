@@ -72,3 +72,13 @@ Mixing in the `TestKit` trait provides `testActor`, `expectMsg` and `lastSender`
 The difference is that with `testActor` the actor is already created and ready for use.  With `TestProbe` this means instantiating an actor yourself.  Not much of a difference.  And `TestProbe` seems less magical.
 
 
+### Getting `ActorRef` for Another Actor in the System
+Sometimes, one actor wants to know the `ActorRef` of another actor.  For example, the
+autopilot wants to know the actor-ref for the copilot in order to watch it.  This can be
+achieved in a couple of ways:
+  1. Use `system.actorSelection` or `system.actorFor` (deprecated).  `actorFor` is more
+     straightforward and `actorSelection` involves either exchanging another identify
+     message or calling `resolveOne` and dealing with the returned Future.
+     In either case, the large problem is that the hierarchy needs to be known and
+     further, this hierarchy could change.
+

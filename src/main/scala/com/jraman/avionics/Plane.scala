@@ -23,6 +23,8 @@ object Plane {
   case object GiveMeControl
   // Response to the GiveMeControl message
   case class Controls(controls: ActorRef)
+  case class GetActor(actorName: String)
+  case class PlaneActorReference(actor: ActorRef)
 }
 
 // We want the Plane to own the Altimeter and we're going to
@@ -65,19 +67,27 @@ class Plane extends Actor with ActorLogging {
       sender ! Controls(controls)
 
     case AltitudeUpdate(altitude) =>
-      log info(s"Altitude is now: $altitude")
+      log info s"Altitude is now: $altitude"
+
+    case GetActor(actorName) => actorName.toLowerCase match {
+      case "copilot" => sender ! PlaneActorReference(actorForPilots(copilotName))
+      case _ => log error s"Unsupported actorName: $actorName"
+    }
   }
 
   implicit val askTimeout = Timeout(1.second)
 
   // Start ResumeSupervisor and children
   def startEquipment() = {
+    val plane = self
+
     val controls = context.actorOf(
       Props(new IsolatedResumeSupervisor() with OneForOneStrategyFactory {
         override def childStarter(): Unit = {
           val altimeter = context.actorOf(Props(newAltimeter), "Altimeter")
+          val autopilot = context.actorOf(Props(newAutopilot(plane)), "Autopilot")
+          autopilot ! Pilot.ReadyToGo
           // these children get implicitly added
-          context.actorOf(Props(newAutopilot), "Autopilot")
           context.actorOf(Props(new ControlSurfaces(altimeter)), "ControlSurfaces")
         }
       }), "Equipment")
@@ -97,7 +107,7 @@ class Plane extends Actor with ActorLogging {
     val people = context.actorOf(
       Props(new IsolatedStopSupervisor() with OneForOneStrategyFactory {
         override def childStarter(): Unit = {
-          // These children get implicitly added to actor hierarychy
+          // These children get implicitly added to actor hierarchy
           context.actorOf(Props(newCopilot(plane, autopilot, altimeter)), copilotName)
           context.actorOf(Props(newPilot(plane, autopilot, controls, altimeter)), pilotName)
         }

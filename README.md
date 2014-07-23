@@ -122,6 +122,18 @@ You should see a message "Pilot will start flying the plane."
  ```
 
 
+### Sec 8.6 Dead Pilots - Extra credit - Autopilot watches Copilot
+ * Autopilot watches Copilot for termination
+ * On copilot termination, autopilot asks plane for control.
+ ```
+ $ git checkout sec8.6a
+ $ sbt
+ > testOnly AutopilotSpec
+ > run
+ Enter number: 2      ## avionics.Avionics
+ ```
+ 
+
 
 Actor Tradeoffs
 ===============

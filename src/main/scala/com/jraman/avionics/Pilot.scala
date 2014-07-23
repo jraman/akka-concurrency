@@ -19,7 +19,7 @@ trait PilotProvider {
     new Pilot(plane, autopilot, controls, altimeter)
   def newCopilot(plane: ActorRef, autopilot: ActorRef, altimeter: ActorRef): Actor =
     new Copilot(plane, autopilot, altimeter)
-  def newAutopilot: Actor = new Autopilot
+  def newAutopilot(plane: ActorRef): Actor = new Autopilot(plane)
 }
 
 
@@ -102,7 +102,6 @@ class Copilot(plane: ActorRef, autopilot: ActorRef, altimeter: ActorRef)
   val messageId = 42
   def receive = {
     case ReadyToGo =>
-      log warning ("../" + pilotName)
       pilotSelection = context.actorSelection("../" + pilotName)
       pilotSelection ! Identify(messageId)
     case ActorIdentity(correlationId, Some(pilot)) =>
@@ -118,10 +117,20 @@ class Copilot(plane: ActorRef, autopilot: ActorRef, altimeter: ActorRef)
 }
 
 
-class Autopilot extends Actor with ActorLogging {
-  // empty for now
+class Autopilot(plane: ActorRef) extends Actor with ActorLogging {
+  import Pilot.ReadyToGo
+  import Plane.{GetActor,PlaneActorReference}
+
   def receive = {
+    case ReadyToGo =>
+      log debug "Got ReadToGo"
+      plane ! GetActor("copilot")
+    case PlaneActorReference(copilot) =>
+      context.watch(copilot)
+    case Terminated(copilot) =>
+      log info "Received copilot terminated message"
+      plane ! GiveMeControl
     case msg =>
-      log.info(s"Got $msg")
+      log error s"Unhandled message: $msg"
   }
 }
