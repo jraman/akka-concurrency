@@ -133,6 +133,15 @@ You should see a message "Pilot will start flying the plane."
  Enter number: 2      ## avionics.Avionics
  ```
  
+ 
+ ### Sec 9.1 Changing Behavior
+  * `become` example
+  ```
+  $ git checkout sec9.1
+  $ sbt
+  > run
+  Enter number: 4     ## investigation.HappyAngryMain
+  ```
 
 
 Actor Tradeoffs
